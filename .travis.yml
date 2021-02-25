@@ -1,5 +1,12 @@
 env:
   global:
+    - NODE_ENV=test
+    - DB_HOST_test=localhost
+    - DB_USER_test=postgres
+    - DB_NAME_test=chatdb_test
+    - DB_PASSWORD_test=
+    - DB_PORT_test=5432
+    - DATABASE_URL_test=postgres://postgres@localhost:5432/chatdb_test
     - CC_TEST_REPORTER_ID=b8b69504a2f048f1028d0ee0cf7c08f0e3e7d8b9dbf1d5f012a6ecbd514efb5d
 language: node_js
 node_js:
@@ -7,7 +14,11 @@ node_js:
 cache:
   directories:
     - node_modules
+services:
+  - postgresql
 before_script:
+  - psql -c 'CREATE DATABASE chatdb_test;' -U postgres
+  - npm run db:create
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
