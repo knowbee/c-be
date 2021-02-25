@@ -1,7 +1,7 @@
 import db from "../database/index";
-import { bodyParser, decodeToken, jsonResponse, loggedInUser } from "../utils";
-
+import { bodyParser, jsonResponse } from "../utils";
 import { CREATED, OK, UNAUTHORIZED } from "../constants/statusCodes";
+import { loggedInUser, decodeToken } from "../helpers";
 
 /**
  * @description Chats class
@@ -15,10 +15,11 @@ export default class ChatsController {
    * @returns {Object} Returns the response
    */
   static async getAllUserChats(req, res) {
-    const loggedInUser = await loggedInUser(req, res);
-    if (loggedInUser) {
-      const query = "SELECT * FROM chats";
-      db.query(query).then((result) => {
+    const user = await loggedInUser(req, res);
+    if (user) {
+      const query = "SELECT * FROM chats WHERE created_by=$1 OR participant=$1";
+      const values = [user.id];
+      db.query(query, values).then((result) => {
         jsonResponse(res, OK, "Chats retrieved", result.rows);
       });
     } else {
