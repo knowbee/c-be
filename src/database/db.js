@@ -19,11 +19,13 @@ pool.on("connect", () => {
 });
 
 const dropTables = async () => {
+  const messagesTable = "DROP TABLE IF EXISTS messages";
+
   const chatsTable = "DROP TABLE IF EXISTS chats";
 
   const usersTable = "DROP TABLE IF EXISTS users";
 
-  const dropTablesQueries = `${chatsTable}; ${usersTable};`;
+  const dropTablesQueries = `${messagesTable};${chatsTable}; ${usersTable};`;
 
   await dbActions(pool, dropTablesQueries);
 };
@@ -45,7 +47,16 @@ const createTables = async () => {
         participant INTEGER NOT NULL REFERENCES users (id),
         "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )`;
-  const createTablesQueries = `${usersTable}; ${chatsTable}`;
+  const messagesTable = `CREATE TABLE IF NOT EXISTS
+      messages(
+      id SERIAL PRIMARY KEY,
+      unread BOOLEAN NOT NULL DEFAULT true,
+      message TEXT NOT NULL,
+      user_id INTEGER NOT NULL REFERENCES users (id),
+      chat_id INTEGER NOT NULL REFERENCES chats (id),
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`;
+  const createTablesQueries = `${usersTable}; ${chatsTable}; ${messagesTable}`;
 
   await dbActions(pool, createTablesQueries);
 };

@@ -4,6 +4,7 @@ import { OK } from "../constants/statusCodes";
 import AuthController from "../controllers/auth.controller";
 import UserController from "../controllers/user.controller";
 import ChatsController from "../controllers/chats.controller";
+import MessagesController from "../controllers/messages.controller";
 import { jsonResponse } from "../utils";
 
 export default http.createServer((req, res) => {
@@ -34,5 +35,12 @@ export default http.createServer((req, res) => {
   // endpoint for fetching chats;
   else if (reqUrl.pathname == "/chats" && req.method === "GET") {
     ChatsController.getAllUserChats(req, res);
+  }
+
+  // endpoint for fetching chat messages
+  else if (reqUrl.pathname == "/messages" && req.method === "GET") {
+    MessagesController.getAllChatMessages(req, res);
+  } else if (reqUrl.pathname == "/messages" && req.method === "POST") {
+    MessagesController.sendMessage(req, res);
   }
 });

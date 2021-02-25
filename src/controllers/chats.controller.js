@@ -53,7 +53,7 @@ export default class ChatsController {
           title: req.body.title,
         };
         const query =
-          "INSERT INTO chats(title, created_by, participant) VALUES($1,$2,$3) returning title, created_by, participant";
+          "INSERT INTO chats(title, created_by, participant) VALUES($1,$2,$3) returning id, title, created_by, participant";
         const values = [data.title, data.created_by, data.participant];
 
         const { rows } = await db.query(query, values);
