@@ -25,4 +25,38 @@ export default class ChatsController {
       jsonResponse(res, UNAUTHORIZED, "You are not authorized", null);
     }
   }
+
+  /**
+   * @author Igwaneza
+   * @author Bruce
+   * @param {Object} req
+   * @param {Object} res
+   * @returns {Object} Returns the response
+   */
+  static async createChat(req, res) {
+    await bodyParser(req);
+    try {
+      let token = req.headers.authorization;
+      let user;
+      user = await decodeToken(token);
+
+      if (user && user.id == req.body.user_id) {
+        const data = {
+          created_by: req.body.user_id,
+          participant: req.body.participant,
+          title: req.body.title,
+        };
+        const query =
+          "INSERT INTO chats(title, created_by, participant) VALUES($1,$2,$3) returning title, created_by, participant";
+        const values = [data.title, data.created_by, data.participant];
+
+        const { rows } = await db.query(query, values);
+        jsonResponse(res, CREATED, "Created chat", rows[0]);
+      } else {
+        jsonResponse(res, UNAUTHORIZED, "Token expired", null);
+      }
+    } catch (error) {
+      jsonResponse(res, UNAUTHORIZED, "You are not authorized", null);
+    }
+  }
 }
