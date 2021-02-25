@@ -1,6 +1,11 @@
 import db from "../database/index";
 import { bodyParser, jsonResponse } from "../utils";
-import { CREATED, OK, UNAUTHORIZED } from "../constants/statusCodes";
+import {
+  BAD_REQUEST,
+  CREATED,
+  OK,
+  UNAUTHORIZED,
+} from "../constants/statusCodes";
 import { loggedInUser, decodeToken } from "../helpers";
 
 /**
@@ -54,7 +59,7 @@ export default class ChatsController {
         const { rows } = await db.query(query, values);
         jsonResponse(res, CREATED, "Created chat", rows[0]);
       } else {
-        jsonResponse(res, UNAUTHORIZED, "Token expired", null);
+        jsonResponse(res, BAD_REQUEST, "Failed to create chat", null);
       }
     } catch (error) {
       jsonResponse(res, UNAUTHORIZED, "You are not authorized", null);
