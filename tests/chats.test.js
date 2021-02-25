@@ -27,6 +27,17 @@ const newChat = {
   participant: 2,
 };
 
+let chat;
+let firstMessage = {
+  chat_id: 1,
+  message: "Hi",
+  user_id: 1,
+};
+let replyMessage = {
+  chat_id: 1,
+  message: "Hi there",
+  user_id: 2,
+};
 const createUserQuery = `
     INSERT INTO users(name, email, password)
     VALUES($1, $2, $3)
@@ -39,7 +50,7 @@ const seconduserValues = [
   secondUserInfo.password,
 ];
 
-describe("Chats", () => {
+describe("Chats & Messages", () => {
   beforeEach(async () => {
     await db
       .query(createUserQuery, userValues)
@@ -68,7 +79,7 @@ describe("Chats", () => {
   afterEach(async () => {
     try {
       await db.query(
-        `TRUNCATE users, chats RESTART IDENTITY CASCADE;
+        `TRUNCATE users, chats, messages RESTART IDENTITY CASCADE;
         `
       );
     } catch (error) {
@@ -160,10 +171,75 @@ describe("Chats", () => {
         .set({ authorization: token })
         .send(newChat)
         .then((res) => {
+          chat = res.body.data;
           expect(res).to.have.status(201);
           expect(res.body).to.have.property("message");
           expect(res.body).to.have.property("data");
           expect(res.body.message).to.eql("Created chat");
+          done();
+        });
+    });
+  });
+
+  /*
+   @GET {array} all messages within a chat
+   */
+  describe("/GET get chat messages", () => {
+    const token = jwt.sign(
+      {
+        id: 1,
+        email: userInfo.email,
+        name: userInfo.name,
+      },
+      process.env.SECRET_KEY
+    );
+    it("It should return unauthorized response", (done) => {
+      chai
+        .request(app)
+        .get("/messages")
+        .then((res) => {
+          expect(res).to.have.status(401);
+          expect(res.body).to.have.property("message");
+          expect(res.body.message).to.eql("Token is missing");
+          done();
+        });
+    });
+    it("It should return Message must not be empty response", (done) => {
+      chai
+        .request(app)
+        .post("/messages")
+        .set({ authorization: token })
+        .send({})
+        .then((res) => {
+          expect(res).to.have.status(400);
+          expect(res.body).to.have.property("message");
+          expect(res.body.message).to.eql("Message must not be empty");
+          done();
+        });
+    });
+    it("It should fail to send a message with the wrong user id", (done) => {
+      chai
+        .request(app)
+        .post("/messages")
+        .set({ authorization: token })
+        .send(replyMessage)
+        .then((res) => {
+          expect(res).to.have.status(401);
+          expect(res.body).to.have.property("message");
+          expect(res.body.message).to.eql("You are not authorized");
+          done();
+        });
+    });
+    it("It should fail to send a message with invalid chat_id", (done) => {
+      chai
+        .request(app)
+        .post("/messages")
+        .set({ authorization: token })
+        .send(firstMessage)
+        .then((res) => {
+          expect(res).to.have.status(500);
+          expect(res.body).to.have.property("message");
+          expect(res.body.message).to.eql("Failed to send a message");
           done();
         });
     });
