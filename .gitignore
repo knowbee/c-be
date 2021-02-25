@@ -1,0 +1,5 @@
+node_modules/
+docker-data/
+.nyc_output
+coverage/
+.env
