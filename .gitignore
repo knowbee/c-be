@@ -3,3 +3,4 @@ docker-data/
 .nyc_output
 coverage/
 .env
+*.log
