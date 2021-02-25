@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
+    "db:create": "babel-node ./src/database/db createTables",
+    "db:dropTables": "babel-node ./src/database/db dropTables",
     "test": "NODE_ENV=test nyc --reporter=text --reporter=lcov mocha --timeout 15000 --require babel-polyfill --require babel-core/register ./tests/**/*.test.js --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "dev": "NODE_ENV=dev nodemon ./src/index.js --exec babel-node --presets env"
+    "dev": "NODE_ENV=dev npm run db:create && NODE_ENV=dev nodemon ./src/index.js --exec babel-node --presets env"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
