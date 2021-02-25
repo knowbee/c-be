@@ -22,6 +22,21 @@ async function bodyParser(req) {
   });
 }
 
+async function dbActions(pool, tableAction) {
+  pool
+    .query(tableAction)
+    .then((res) => {
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+  pool.on("remove", () => {
+    console.log("client removed");
+    process.exit(0);
+  });
+}
 /**
  *@author Igwaneza
  * @author Bruce
@@ -42,4 +57,4 @@ const jsonResponse = (res, status, message, data) => {
   );
 };
 
-export { bodyParser, jsonResponse };
+export { bodyParser, jsonResponse, dbActions };

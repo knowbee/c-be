@@ -1,5 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
+import { dbActions } from "../utils";
 
 const { NODE_ENV } = process.env;
 const env =
@@ -17,28 +18,16 @@ pool.on("connect", () => {
   console.log("connected to the Database");
 });
 
-const dropTables = () => {
+const dropTables = async () => {
   const chatsTable = "DROP TABLE IF EXISTS chats";
 
   const usersTable = "DROP TABLE IF EXISTS users";
 
   const dropTablesQueries = `${chatsTable}; ${usersTable};`;
 
-  pool
-    .query(dropTablesQueries)
-    .then((res) => {
-      pool.end();
-    })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
-  pool.on("remove", () => {
-    console.log("client removed");
-    process.exit(0);
-  });
+  await dbActions(pool, dropTablesQueries);
 };
-const createTables = () => {
+const createTables = async () => {
   const usersTable = `CREATE TABLE IF NOT EXISTS
       users(
         id SERIAL PRIMARY KEY,
@@ -58,19 +47,7 @@ const createTables = () => {
         )`;
   const createTablesQueries = `${usersTable}; ${chatsTable}`;
 
-  pool
-    .query(createTablesQueries)
-    .then((res) => {
-      pool.end();
-    })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
-  pool.on("remove", () => {
-    console.log("client removed");
-    process.exit(0);
-  });
+  await dbActions(pool, createTablesQueries);
 };
 
 export { dropTables, createTables, pool };
