@@ -3,6 +3,7 @@ import url from "url";
 import { OK } from "../constants/statusCodes";
 import AuthController from "../controllers/auth.controller";
 import UserController from "../controllers/user.controller";
+import ChatsController from "../controllers/chats.controller";
 import { jsonResponse } from "../utils";
 
 export default http.createServer((req, res) => {
@@ -21,8 +22,17 @@ export default http.createServer((req, res) => {
     AuthController.login(req, res);
   }
 
-  // endpoint to register a new user
+  // endpoint to fetch all user
   else if (reqUrl.pathname == "/users" && req.method === "GET") {
     UserController.getAllUsers(req, res);
+  }
+
+  // endpoint for creating a chat
+  else if (reqUrl.pathname == "/chats" && req.method === "POST") {
+    ChatsController.createChat(req, res);
+  }
+  // endpoint for fetching chats;
+  else if (reqUrl.pathname == "/chats" && req.method === "GET") {
+    ChatsController.getAllUserChats(req, res);
   }
 });

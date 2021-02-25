@@ -11,7 +11,8 @@ describe("User", () => {
     try {
       await db.query(
         `
-        TRUNCATE TABLE users RESTART IDENTITY CASCADE;`
+        TRUNCATE TABLE users,chats RESTART IDENTITY CASCADE;
+        `
       );
     } catch (error) {
       console.log(error);
