@@ -10,6 +10,7 @@ const config = {
   connectionString: process.env[`DATABASE_URL${env}`],
   max: 10,
   idleTimeoutMillis: 30000,
+  ssl: { rejectUnauthorized: false },
 };
 
 const pool = new pg.Pool(config);
