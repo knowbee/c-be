@@ -1,7 +1,31 @@
 const endpoints = [
   {
+    method: "POST",
+    register: "/auth/register",
+  },
+  {
+    method: "POST",
+    login: "/auth/login",
+  },
+  {
     method: "GET",
-    home: "/",
+    "get users": "/users",
+  },
+  {
+    method: "GET",
+    "get chats": "/chats",
+  },
+  {
+    method: "POST",
+    "create chat": "/chats",
+  },
+  {
+    method: "GET",
+    "get all messages from chat": "/messages",
+  },
+  {
+    method: "POST",
+    "send a mesage": "/messages",
   },
 ];
 

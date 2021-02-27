@@ -1,11 +1,12 @@
 import http from "http";
 import url from "url";
-import { OK } from "../constants/statusCodes";
+import { NOT_FOUND, OK } from "../constants/statusCodes";
 import AuthController from "../controllers/auth.controller";
 import UserController from "../controllers/user.controller";
 import ChatsController from "../controllers/chats.controller";
 import MessagesController from "../controllers/messages.controller";
 import { jsonResponse } from "../utils";
+import endpoints from "../constants/endpoints";
 
 export default http.createServer((req, res) => {
   const reqUrl = url.parse(req.url, true);
@@ -42,5 +43,17 @@ export default http.createServer((req, res) => {
     MessagesController.getAllChatMessages(req, res);
   } else if (reqUrl.pathname == "/messages" && req.method === "POST") {
     MessagesController.sendMessage(req, res);
+  }
+  // Handle notFound
+  else {
+    res.statusCode = NOT_FOUND;
+    res.setHeader("content-Type", "Application/json");
+    res.end(
+      JSON.stringify({
+        message: "The route not found, here are available endpoints",
+        endpoints,
+      })
+    );
+    return;
   }
 });
