@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import AuthController from "./controllers/auth.controller";
 import UserController from "./controllers/user.controller";
 import MessagesController from "./controllers/messages.controller";
-import API from "../lib";
+import API from "./lib";
 import cors from "cors";
 import { logger } from "./helpers";
 dotenv.config();

@@ -17,7 +17,9 @@
       "**/*.test.js",
       "src/utils/**",
       "src/utils/**",
-      "src/index.js"
+      "src/index.js",
+      "src/helpers/*",
+      "src/lib/*"
     ]
   },
   "devDependencies": {

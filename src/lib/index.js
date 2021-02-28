@@ -77,17 +77,6 @@ class MiddlewarePipeline {
     next();
   }
 }
-
-function Router() {
-  const router = function router(req, res, next) {
-    router.handle.call(router, req, res, next);
-  };
-
-  Object.setPrototypeOf(router, new MiddlewarePipeline());
-
-  return router;
-}
-
 class Layer {
   constructor(method, url, middleware, opts) {
     this.method = method;
@@ -141,7 +130,4 @@ class API extends MiddlewarePipeline {
     return http.createServer(handler).listen({ port }, callback);
   }
 }
-
-API.Router = Router;
-
 module.exports = API;

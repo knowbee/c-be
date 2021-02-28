@@ -14,17 +14,12 @@ export default class MessagesController {
   static async getAllMessages(req, res) {
     const user = await loggedInUser(req, res);
     if (user) {
-      try {
-        const query = `SELECT * FROM messages WHERE receiver_id=$1 OR sender_id=$1`;
-        const values = [user.id];
-        db.query(query, values).then((result) => {
-          jsonResponse(res, OK, "Messages retrieved", result.rows);
-          return;
-        });
-      } catch (error) {
-        jsonResponse(res, NOT_FOUND, "User not found", null);
+      const query = `SELECT * FROM messages WHERE receiver_id=$1 OR sender_id=$1`;
+      const values = [user.id];
+      db.query(query, values).then((result) => {
+        jsonResponse(res, OK, "Messages retrieved", result.rows);
         return;
-      }
+      });
     } else {
       jsonResponse(res, UNAUTHORIZED, "You are not authorized", null);
     }
@@ -34,18 +29,14 @@ export default class MessagesController {
     const { receiver_id, message, sender_id } = body;
     const user = await loggedInUser(req, res);
     if ((receiver_id, message, sender_id)) {
-      try {
-        if (user.id == body.sender_id) {
-          const query = `INSERT INTO messages(receiver_id, message, sender_id) VALUES($1,$2,$3) returning id, receiver_id, message, sender_id`;
-          const values = [receiver_id, message, sender_id];
-          const { rows } = await db.query(query, values);
-          eventEmitter.emit("messageSent", rows[0]);
-          jsonResponse(res, CREATED, "Messages sent", rows[0]);
-        } else {
-          jsonResponse(res, UNAUTHORIZED, "You are not authorized", null);
-        }
-      } catch (error) {
-        jsonResponse(res, SERVER_ERROR, "Failed to send a message", null);
+      if (user.id == body.sender_id) {
+        const query = `INSERT INTO messages(receiver_id, message, sender_id) VALUES($1,$2,$3) returning id, receiver_id, message, sender_id`;
+        const values = [receiver_id, message, sender_id];
+        const { rows } = await db.query(query, values);
+        eventEmitter.emit("messageSent", rows[0]);
+        jsonResponse(res, CREATED, "Messages sent", rows[0]);
+      } else {
+        jsonResponse(res, UNAUTHORIZED, "You are not authorized", null);
       }
     } else {
       jsonResponse(res, BAD_REQUEST, "Message must not be empty", null);

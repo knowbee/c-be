@@ -145,5 +145,17 @@ describe("Messages", () => {
           done();
         });
     });
+    it("It should fetch user messages", (done) => {
+      chai
+        .request(app)
+        .get("/messages")
+        .set({ authorization: token })
+        .then((res) => {
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.property("message");
+          expect(res.body.message).to.eql("Messages retrieved");
+          done();
+        });
+    });
   });
 });

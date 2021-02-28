@@ -1,12 +1,17 @@
 import "dotenv/config";
 import pg from "pg";
 
-const { NODE_ENV } = process.env;
-const env =
-  NODE_ENV === "test" || NODE_ENV === "dev" ? `_${NODE_ENV}`.toUpperCase() : "";
+const env = process.env.NODE_ENV || "dev";
+const configDb = require("./config")[env];
+const url = configDb.url || process.env.DATABASE_CONNECTION_URL;
 
+const config = {
+  connectionString: url,
+  max: 10,
+  idleTimeoutMillis: 30000,
+};
 const pool = new pg.Pool({
-  connectionString: process.env[`DATABASE_URL${env}`],
+  connectionString: url,
 });
 
 pool.on("connect", () => {
