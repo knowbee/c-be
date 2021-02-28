@@ -1,27 +1,3 @@
-/**
- *@author Igwaneza
- * @author Bruce
- * @param {Object} req
- */
-
-async function bodyParser(req) {
-  return new Promise((resolve, reject) => {
-    let totalChunked = "";
-    req
-      .on("error", (err) => {
-        console.error(err);
-        reject();
-      })
-      .on("data", (chunk) => {
-        totalChunked += chunk;
-      })
-      .on("end", () => {
-        req.body = JSON.parse(totalChunked);
-        resolve();
-      });
-  });
-}
-
 async function dbActions(pool, tableAction) {
   pool
     .query(tableAction)
