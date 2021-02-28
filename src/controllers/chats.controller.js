@@ -39,18 +39,17 @@ export default class ChatsController {
    * @param {Object} res
    * @returns {Object} Returns the response
    */
-  static async createChat(req, res) {
-    await bodyParser(req);
+  static async createChat(req, res, body) {
     try {
       let token = req.headers.authorization;
       let user;
       user = await decodeToken(token);
 
-      if (user && user.id == req.body.user_id) {
+      if (user && user.id == body.user_id) {
         const data = {
-          created_by: req.body.user_id,
-          participant: req.body.participant,
-          title: req.body.title,
+          created_by: body.user_id,
+          participant: body.participant,
+          title: body.title,
         };
         const query =
           "INSERT INTO chats(title, created_by, participant) VALUES($1,$2,$3) returning id, title, created_by, participant";

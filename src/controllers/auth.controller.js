@@ -15,13 +15,12 @@ export default class AuthController {
    * @param {Object} res
    * @returns {Object} Returns the response
    */
-  static async register(req, res) {
-    await bodyParser(req);
+  static async register(req, res, body) {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const hashedPassword = await bcrypt.hash(body.password, salt);
     const data = {
-      name: req.body.name,
-      email: req.body.email,
+      name: body.name,
+      email: body.email,
       password: hashedPassword,
     };
     const query =
@@ -41,6 +40,7 @@ export default class AuthController {
       );
     }
     const { rows } = await db.query(query, values);
+    console.log(rows[0]);
     jsonResponse(res, CREATED, "Created user", rows[0]);
   }
 
@@ -51,21 +51,17 @@ export default class AuthController {
    * @param {Object} res
    * @returns {Object} Returns the response
    */
-  static async login(req, res) {
-    await bodyParser(req);
-
+  static async login(req, res, body) {
     let user;
-    if (req.body.email !== "" && req.body.password !== "") {
+    if (body.email !== "" && body.password !== "") {
       const userExists = await db.query(
         'SELECT * FROM users WHERE "email"=$1',
-        [req.body.email]
+        [body.email]
       );
 
       if (userExists.rows.length > 0) {
         for (let i = 0; i < userExists.rows.length; i += 1) {
-          if (
-            bcrypt.compareSync(req.body.password, userExists.rows[i].password)
-          ) {
+          if (bcrypt.compareSync(body.password, userExists.rows[i].password)) {
             user = {
               id: userExists.rows[i].id,
               name: userExists.rows[i].name,

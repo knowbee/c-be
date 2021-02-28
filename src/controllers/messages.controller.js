@@ -9,7 +9,7 @@ import {
 } from "../constants/statusCodes";
 import { bodyParser, jsonResponse } from "../utils";
 import { loggedInUser } from "../helpers";
-
+import eventEmitter from "../sockets/eventEmitter";
 export default class MessagesController {
   static async getAllChatMessages(req, res) {
     const { chat_id } = req.headers;
@@ -36,16 +36,16 @@ export default class MessagesController {
     }
   }
 
-  static async sendMessage(req, res) {
-    await bodyParser(req);
-    const { chat_id, message, user_id } = req.body;
+  static async sendMessage(req, res, body) {
+    const { chat_id, message, user_id } = body;
     const user = await loggedInUser(req, res);
     if ((chat_id, message, user_id)) {
       try {
-        if (user.id == req.body.user_id) {
+        if (user.id == body.user_id) {
           const query = `INSERT INTO messages(chat_id, message, user_id) VALUES($1,$2,$3) returning id, chat_id, message, user_id`;
           const values = [chat_id, message, user_id];
           const { rows } = await db.query(query, values);
+          eventEmitter.emit("messageSent", rows[0]);
           jsonResponse(res, CREATED, "Messages sent", rows[0]);
         } else {
           jsonResponse(res, UNAUTHORIZED, "You are not authorized", null);
