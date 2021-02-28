@@ -7,28 +7,22 @@ import {
   BAD_REQUEST,
   CREATED,
 } from "../constants/statusCodes";
-import { bodyParser, jsonResponse } from "../utils";
+import { jsonResponse } from "../utils";
 import { loggedInUser } from "../helpers";
 import eventEmitter from "../sockets/eventEmitter";
 export default class MessagesController {
-  static async getAllChatMessages(req, res) {
-    const { chat_id } = req.headers;
+  static async getAllMessages(req, res) {
     const user = await loggedInUser(req, res);
     if (user) {
       try {
-        const query = `SELECT * FROM chats WHERE id=$1`;
-        const values = [chat_id];
-        const { rows } = await db.query(query, values);
-        if (rows[0].title) {
-          const query = `SELECT * FROM messages WHERE chat_id=$1`;
-          const values = [rows[0].id];
-          db.query(query, values).then((result) => {
-            jsonResponse(res, OK, "Messages retrieved", result.rows);
-            return;
-          });
-        }
+        const query = `SELECT * FROM messages WHERE receiver_id=$1 OR sender_id=$1`;
+        const values = [user.id];
+        db.query(query, values).then((result) => {
+          jsonResponse(res, OK, "Messages retrieved", result.rows);
+          return;
+        });
       } catch (error) {
-        jsonResponse(res, NOT_FOUND, "Chat does not exist", null);
+        jsonResponse(res, NOT_FOUND, "User not found", null);
         return;
       }
     } else {
@@ -37,13 +31,13 @@ export default class MessagesController {
   }
 
   static async sendMessage(req, res, body) {
-    const { chat_id, message, user_id } = body;
+    const { receiver_id, message, sender_id } = body;
     const user = await loggedInUser(req, res);
-    if ((chat_id, message, user_id)) {
+    if ((receiver_id, message, sender_id)) {
       try {
-        if (user.id == body.user_id) {
-          const query = `INSERT INTO messages(chat_id, message, user_id) VALUES($1,$2,$3) returning id, chat_id, message, user_id`;
-          const values = [chat_id, message, user_id];
+        if (user.id == body.sender_id) {
+          const query = `INSERT INTO messages(receiver_id, message, sender_id) VALUES($1,$2,$3) returning id, receiver_id, message, sender_id`;
+          const values = [receiver_id, message, sender_id];
           const { rows } = await db.query(query, values);
           eventEmitter.emit("messageSent", rows[0]);
           jsonResponse(res, CREATED, "Messages sent", rows[0]);

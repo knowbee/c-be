@@ -40,7 +40,6 @@ export default class AuthController {
       );
     }
     const { rows } = await db.query(query, values);
-    console.log(rows[0]);
     jsonResponse(res, CREATED, "Created user", rows[0]);
   }
 
