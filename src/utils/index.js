@@ -33,4 +33,4 @@ const jsonResponse = (res, status, message, data) => {
   );
 };
 
-export { bodyParser, jsonResponse, dbActions };
+export { jsonResponse, dbActions };
