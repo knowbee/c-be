@@ -11,6 +11,15 @@
     "start": "npm run db:create && babel-node ./src/index.js --presets env",
     "dev": "NODE_ENV=dev npm run db:create && NODE_ENV=dev nodemon ./src/index.js --exec babel-node --presets env"
   },
+  "nyc": {
+    "include": "src",
+    "exclude": [
+      "**/*.test.js",
+      "src/utils/**",
+      "src/utils/**",
+      "src/index.js"
+    ]
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",

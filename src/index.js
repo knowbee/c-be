@@ -2,16 +2,15 @@
 import dotenv from "dotenv";
 import AuthController from "./controllers/auth.controller";
 import UserController from "./controllers/user.controller";
-import ChatsController from "./controllers/chats.controller";
 import MessagesController from "./controllers/messages.controller";
-
+import API from "../lib";
+import cors from "cors";
 import { logger } from "./helpers";
-
 dotenv.config();
 
-const API = require("./api");
-const cors = require("cors");
-const app = new API();
+let server;
+
+let app = new API();
 
 // Enable cors
 app.use(cors());
@@ -56,24 +55,8 @@ app.get("/users", (req, res, next) => {
   UserController.getAllUsers(req, res);
 });
 
-app.get("/chats", (req, res, next) => {
-  ChatsController.getAllUserChats(req, res);
-});
-app.post("/chats", (req, res, next) => {
-  let body = "";
-  req
-    .on("data", (chunk) => {
-      body += chunk;
-    })
-    .on("end", () => {
-      if (body) {
-        body = JSON.parse(body);
-        ChatsController.createChat(req, res, body);
-      }
-    });
-});
 app.get("/messages", (req, res, next) => {
-  MessagesController.getAllChatMessages(req, res);
+  MessagesController.getAllMessages(req, res);
 });
 
 app.post("/messages", (req, res, next) => {
@@ -92,6 +75,8 @@ app.post("/messages", (req, res, next) => {
 
 const port = process.env.PORT;
 try {
-  app.listen(5000);
+  server = app.listen(5000);
   logger.info("app listening on port " + port);
 } catch (error) {}
+
+export { server };
