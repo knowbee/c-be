@@ -10,12 +10,10 @@
 
 ## Endpoints
 
-| Resource URL   | Method | Description                                |
-| -------------- | ------ | ------------------------------------------ |
-| /auth/register | POST   | Register a new user                        |
-| /auth/login    | POST   | Login user                                 |
-| /chats         | POST   | Create a one to one chat                   |
-| /users         | GET    | GET all users                              |
-| /chats         | GET    | GET all chats by the current loggedin user |
-| /messages      | POST   | Send a message                             |
-| /messages      | GET    | GET all messages from a one to one chat    |
+| Resource URL   | Method | Description                             |
+| -------------- | ------ | --------------------------------------- |
+| /auth/register | POST   | Register a new user                     |
+| /auth/login    | POST   | Login user                              |
+| /users         | GET    | GET all users                           |
+| /messages      | POST   | Send a message                          |
+| /messages      | GET    | GET all messages from a one to one chat |
