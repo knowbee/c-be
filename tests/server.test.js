@@ -1,6 +1,6 @@
 import chai from "chai";
 import chaiHTTP from "chai-http";
-import app from "../src/index";
+import { server as app } from "../src/index";
 let expect = chai.expect;
 chai.use(chaiHTTP);
 

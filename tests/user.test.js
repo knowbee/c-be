@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiHTTP from "chai-http";
 import db from "../src/database";
-import app from "../src/index";
+import { server as app } from "../src/index";
 
 let expect = chai.expect;
 chai.use(chaiHTTP);
@@ -11,7 +11,7 @@ describe("User", () => {
     try {
       await db.query(
         `
-        TRUNCATE TABLE users,chats, messages RESTART IDENTITY CASCADE;
+        TRUNCATE TABLE users, messages RESTART IDENTITY CASCADE;
         `
       );
     } catch (error) {
