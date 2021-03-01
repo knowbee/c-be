@@ -39,7 +39,6 @@ const createTables = async () => {
   const messagesTable = `CREATE TABLE IF NOT EXISTS
       messages(
       id SERIAL PRIMARY KEY,
-      unread BOOLEAN NOT NULL DEFAULT true,
       message TEXT NOT NULL,
       sender_id INTEGER NOT NULL REFERENCES users (id),
       receiver_id INTEGER NOT NULL REFERENCES users (id),
