@@ -13,6 +13,7 @@ export default class AuthController {
    * @author Bruce
    * @param {Object} req
    * @param {Object} res
+   * @param {Object} body
    * @returns {Object} Returns the response
    */
   static async register(req, res, body) {
@@ -48,6 +49,7 @@ export default class AuthController {
    * @author Bruce
    * @param {Object} req
    * @param {Object} res
+   * @param {Object} body
    * @returns {Object} Returns the response
    */
   static async login(req, res, body) {
