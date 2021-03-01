@@ -15,9 +15,6 @@ export default (app) => {
       client.emit("incomingMessage", {
         message,
       });
-      client.broadcast.emit("incomingMessage", {
-        message,
-      });
     });
   });
 

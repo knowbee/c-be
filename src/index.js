@@ -6,6 +6,8 @@ import MessagesController from "./controllers/messages.controller";
 import API from "./lib";
 import cors from "cors";
 import { logger } from "./helpers";
+import socketIo from "./sockets/socketio";
+
 dotenv.config();
 
 let server;
@@ -76,6 +78,7 @@ app.post("/messages", (req, res, next) => {
 const port = process.env.PORT;
 try {
   server = app.listen(5000);
+  socketIo(server);
   logger.info("app listening on port " + port);
 } catch (error) {}
 
