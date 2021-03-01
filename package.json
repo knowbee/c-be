@@ -19,6 +19,8 @@
       "src/utils/**",
       "src/index.js",
       "src/helpers/*",
+      "src/database/*",
+      "src/sockets/*",
       "src/lib/*"
     ]
   },
