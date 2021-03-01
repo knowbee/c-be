@@ -1,9 +1,7 @@
 import db from "../database/index";
 import {
   OK,
-  NOT_FOUND,
   UNAUTHORIZED,
-  SERVER_ERROR,
   BAD_REQUEST,
   CREATED,
 } from "../constants/statusCodes";
@@ -11,12 +9,29 @@ import { jsonResponse } from "../utils";
 import { loggedInUser } from "../helpers";
 import eventEmitter from "../sockets/eventEmitter";
 export default class MessagesController {
+  /**
+   * @author Igwaneza
+   * @author Bruce
+   * @param {Object} req
+   * @param {Object} res
+   * @returns {Object} Returns the response
+   */
+
   static async getAllMessages(req, res) {
     const user = await loggedInUser(req, res);
     if (user) {
-      const query = `SELECT * FROM messages WHERE receiver_id=$1 OR sender_id=$1`;
+      const query = `
+      SELECT  messages.*, 
+        a.name,
+        b.name
+      FROM  messages     
+        INNER JOIN users a
+            ON messages.sender_id = a.id
+        INNER JOIN users b
+            ON messages.receiver_id = b.id
+      `;
       const values = [user.id];
-      db.query(query, values).then((result) => {
+      db.query(query).then((result) => {
         jsonResponse(res, OK, "Messages retrieved", result.rows);
         return;
       });
@@ -25,6 +40,14 @@ export default class MessagesController {
     }
   }
 
+  /**
+   * @author Igwaneza
+   * @author Bruce
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Object} body
+   * @returns {Object} Returns the response
+   */
   static async sendMessage(req, res, body) {
     const { receiver_id, message, sender_id } = body;
     const user = await loggedInUser(req, res);
