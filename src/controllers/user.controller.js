@@ -16,8 +16,10 @@ export default class UserController {
   static async getAllUsers(req, res) {
     const user = await loggedInUser(req, res);
     if (user) {
-      const query = "SELECT id, name, email, joined_at FROM users";
-      db.query(query).then((result) => {
+      const query =
+        "SELECT id, name, email, joined_at FROM users WHERE id != $1";
+      const values = [user.id];
+      db.query(query, values).then((result) => {
         jsonResponse(res, OK, "Users retrieved", result.rows);
         return;
       });
