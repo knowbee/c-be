@@ -118,7 +118,7 @@ class Layer {
 }
 
 class API extends MiddlewarePipeline {
-  listen(port, callback) {
+  listen(port, host, callback) {
     const handler = (req, res) => {
       this.handle(req, res, (err) => {
         if (err) {
@@ -127,7 +127,7 @@ class API extends MiddlewarePipeline {
         }
       });
     };
-    return http.createServer(handler).listen({ port }, callback);
+    return http.createServer(handler).listen({ host, port }, callback);
   }
 }
 module.exports = API;

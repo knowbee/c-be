@@ -75,9 +75,11 @@ app.post("/messages", (req, res, next) => {
     });
 });
 
-const port = process.env.PORT;
+const hostname = "0.0.0.0";
+
+const port = process.env.PORT || 5000;
 try {
-  server = app.listen(5000);
+  server = app.listen(port, hostname);
   socketIo(server);
   logger.info("app listening on port " + port);
 } catch (error) {}
