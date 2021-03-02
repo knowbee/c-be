@@ -8,6 +8,7 @@ import cors from "cors";
 import { logger } from "./helpers";
 import socketIo from "./sockets/socketio";
 import bodyParser from "body-parser";
+import ErrorResponse from "./middlewares";
 dotenv.config();
 
 let server;
@@ -16,7 +17,6 @@ let app = new App();
 
 // Enable cors
 app.use(cors());
-
 app.use(bodyParser.json());
 app.get("/", (req, res, next) => {
   res.end(
@@ -44,6 +44,8 @@ app.get("/messages", (req, res, next) => {
 app.post("/messages", (req, res, next) => {
   MessagesController.sendMessage(req, res);
 });
+
+app.use(ErrorResponse());
 
 const hostname = "0.0.0.0";
 
