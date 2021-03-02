@@ -3,22 +3,22 @@ import dotenv from "dotenv";
 import AuthController from "./controllers/auth.controller";
 import UserController from "./controllers/user.controller";
 import MessagesController from "./controllers/messages.controller";
-import API from "./lib";
+import App from "./lib";
 import cors from "cors";
 import { logger } from "./helpers";
 import socketIo from "./sockets/socketio";
-
+import bodyParser from "body-parser";
 dotenv.config();
 
 let server;
 
-let app = new API();
+let app = new App();
 
 // Enable cors
 app.use(cors());
 
+app.use(bodyParser.json());
 app.get("/", (req, res, next) => {
-  res.setHeader("content-Type", "Application/json");
   res.end(
     JSON.stringify({
       message: "Welcome",
@@ -26,31 +26,11 @@ app.get("/", (req, res, next) => {
   );
 });
 app.post("/auth/register", (req, res, next) => {
-  let body = "";
-  req
-    .on("data", (chunk) => {
-      body += chunk;
-    })
-    .on("end", () => {
-      if (body) {
-        body = JSON.parse(body);
-        AuthController.register(req, res, body);
-      }
-    });
+  AuthController.register(req, res);
 });
 
 app.post("/auth/login", (req, res, next) => {
-  let body = "";
-  req
-    .on("data", (chunk) => {
-      body += chunk;
-    })
-    .on("end", () => {
-      if (body) {
-        body = JSON.parse(body);
-        AuthController.login(req, res, body);
-      }
-    });
+  AuthController.login(req, res);
 });
 
 app.get("/users", (req, res, next) => {
@@ -62,17 +42,7 @@ app.get("/messages", (req, res, next) => {
 });
 
 app.post("/messages", (req, res, next) => {
-  let body = "";
-  req
-    .on("data", (chunk) => {
-      body += chunk;
-    })
-    .on("end", () => {
-      if (body) {
-        body = JSON.parse(body);
-        MessagesController.sendMessage(req, res, body);
-      }
-    });
+  MessagesController.sendMessage(req, res);
 });
 
 const hostname = "0.0.0.0";
