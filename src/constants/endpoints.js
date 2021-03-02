@@ -9,15 +9,7 @@ const endpoints = [
   },
   {
     method: "GET",
-    "get users": "/users",
-  },
-  {
-    method: "GET",
-    "get chats": "/chats",
-  },
-  {
-    method: "POST",
-    "create chat": "/chats",
+    "get loggedin users": "/users",
   },
   {
     method: "GET",
