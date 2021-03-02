@@ -5,14 +5,12 @@ let expect = chai.expect;
 chai.use(chaiHTTP);
 
 describe("TEST app", () => {
-  it("It should return welcome message", (done) => {
+  it("It should ping home", (done) => {
     chai
       .request(app)
       .get("/")
       .then((res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.a("object");
-        expect(res.body).to.have.property("message").eql("Welcome");
         done();
       });
   });
