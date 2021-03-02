@@ -29,6 +29,7 @@ export default class MessagesController {
             ON messages.sender_id = a.id
         INNER JOIN users b
             ON messages.receiver_id = b.id
+      WHERE messages.sender_id = ${user.id} OR  messages.receiver_id = ${user.id}
       `;
       db.query(query).then((result) => {
         jsonResponse(res, OK, "Messages retrieved", result.rows);

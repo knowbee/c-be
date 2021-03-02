@@ -2,8 +2,7 @@ import { CREATED, OK, SERVER_ERROR } from "../constants/statusCodes";
 import bcrypt from "bcryptjs";
 import db from "../database/index";
 import jwt from "jsonwebtoken";
-import { bodyParser, jsonResponse } from "../utils";
-
+import { jsonResponse } from "../utils";
 /**
  * @description Authentication class
  */
