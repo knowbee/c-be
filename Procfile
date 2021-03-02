@@ -1,1 +1,1 @@
-web: npm run db:create && babel-node ./src/index.js --presets env
+web: npm run db:create && npm run build && babel-node ./dist/index.js --presets env
