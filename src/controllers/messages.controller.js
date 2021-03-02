@@ -30,7 +30,6 @@ export default class MessagesController {
         INNER JOIN users b
             ON messages.receiver_id = b.id
       `;
-      const values = [user.id];
       db.query(query).then((result) => {
         jsonResponse(res, OK, "Messages retrieved", result.rows);
         return;
@@ -48,11 +47,11 @@ export default class MessagesController {
    * @param {Object} body
    * @returns {Object} Returns the response
    */
-  static async sendMessage(req, res, body) {
-    const { receiver_id, message, sender_id } = body;
+  static async sendMessage(req, res) {
+    const { receiver_id, message, sender_id } = req.body;
     const user = await loggedInUser(req, res);
     if ((receiver_id, message, sender_id)) {
-      if (user.id == body.sender_id) {
+      if (user.id == sender_id) {
         const query = `INSERT INTO messages(receiver_id, message, sender_id) VALUES($1,$2,$3) returning id, receiver_id, message, sender_id`;
         const values = [receiver_id, message, sender_id];
         const { rows } = await db.query(query, values);
