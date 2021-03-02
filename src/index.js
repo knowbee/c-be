@@ -5,10 +5,10 @@ import UserController from "./controllers/user.controller";
 import MessagesController from "./controllers/messages.controller";
 import App from "./lib";
 import cors from "cors";
-import { logger } from "./helpers";
 import socketIo from "./sockets/socketio";
 import bodyParser from "body-parser";
 import ErrorResponse from "./middlewares";
+import morgan from "morgan";
 dotenv.config();
 
 let server;
@@ -17,7 +17,14 @@ let app = new App();
 
 // Enable cors
 app.use(cors());
+
+// body parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// logging middleware
+app.use(morgan("tiny"));
+
 app.get("/", (req, res, next) => {
   res.end(
     JSON.stringify({
@@ -53,7 +60,7 @@ const port = process.env.PORT || 5000;
 try {
   server = app.listen(port, hostname);
   socketIo(server);
-  logger.info("app listening on port " + port);
+  console.log("app listening on port " + port);
 } catch (error) {}
 
 export { server };
