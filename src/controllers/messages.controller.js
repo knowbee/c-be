@@ -30,7 +30,7 @@ export default class MessagesController {
         INNER JOIN users b
             ON messages.receiver_id = b.id
       WHERE messages.sender_id = ${user.id} OR  messages.receiver_id = ${user.id}
-      ORDER BY id DESC
+      ORDER BY id ASC
       `;
       db.query(query).then((result) => {
         jsonResponse(res, OK, "Messages retrieved", result.rows);
